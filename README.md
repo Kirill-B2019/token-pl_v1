@@ -164,6 +164,4 @@ php artisan test
 
 Этот проект является коммерческим продуктом и защищен авторскими правами.
 
-## Поддержка
-
-Для получения поддержки обращайтесь к администратору системы.
+[![Ask DeepWiki](https://deepwiki.com/badge.svg)](https://deepwiki.com/Kirill-B2019/token-pl_v1)
