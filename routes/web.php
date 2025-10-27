@@ -43,6 +43,17 @@ Route::middleware(['auth', 'role:client'])->prefix('client')->name('client.')->g
     Route::get('/transactions/{transaction}', [App\Http\Controllers\ClientController::class, 'showTransaction'])->name('transactions.show');
     Route::get('/profile', [App\Http\Controllers\ClientController::class, 'profile'])->name('profile');
     Route::post('/profile', [App\Http\Controllers\ClientController::class, 'updateProfile'])->name('profile.update');
+    
+    // Payment result pages
+    Route::get('/payment/success', [App\Http\Controllers\ClientController::class, 'paymentSuccess'])->name('payment.success');
+    Route::get('/payment/fail', [App\Http\Controllers\ClientController::class, 'paymentFail'])->name('payment.fail');
+    
+    // TRON Wallet routes
+    Route::get('/wallet', [App\Http\Controllers\TronWalletController::class, 'index'])->name('wallet');
+    Route::post('/wallet/create', [App\Http\Controllers\TronWalletController::class, 'createWallet'])->name('wallet.create');
+    Route::get('/wallet/send', [App\Http\Controllers\TronWalletController::class, 'sendForm'])->name('wallet.send');
+    Route::post('/wallet/send', [App\Http\Controllers\TronWalletController::class, 'sendTransaction'])->name('wallet.send.post');
+    Route::get('/wallet/history', [App\Http\Controllers\TronWalletController::class, 'history'])->name('wallet.history');
 });
 
 // Broker routes

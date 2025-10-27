@@ -91,7 +91,7 @@ APP_NAME="Token Platform"
 APP_ENV=production
 APP_KEY=base64:your_generated_key
 APP_DEBUG=false
-APP_URL=https://your-domain.com
+APP_URL=https://cardfly.online
 
 DB_CONNECTION=mysql
 DB_HOST=127.0.0.1
@@ -110,7 +110,7 @@ MAIL_PORT=587
 MAIL_USERNAME=your-email
 MAIL_PASSWORD=your-password
 MAIL_ENCRYPTION=tls
-MAIL_FROM_ADDRESS=noreply@your-domain.com
+MAIL_FROM_ADDRESS=noreply@cardfly.online
 MAIL_FROM_NAME="${APP_NAME}"
 
 # Настройки для двухфакторной аутентификации
@@ -121,7 +121,7 @@ SESSION_DRIVER=redis
 SESSION_LIFETIME=120
 SESSION_ENCRYPT=true
 SESSION_PATH=/
-SESSION_DOMAIN=your-domain.com
+SESSION_DOMAIN=cardfly.online
 ```
 
 ### 5. Выполнение миграций и сидеров
@@ -146,13 +146,13 @@ sudo -u www-data php artisan view:cache
 ```nginx
 server {
     listen 80;
-    server_name your-domain.com;
+    server_name cardfly.online;
     return 301 https://$server_name$request_uri;
 }
 
 server {
     listen 443 ssl http2;
-    server_name your-domain.com;
+    server_name cardfly.online;
     root /var/www/token-platform/public;
     index index.php;
 
@@ -344,7 +344,7 @@ sudo chmod +x /usr/local/bin/backup-token-platform.sh
 
 ## Проверка установки
 
-1. Откройте браузер и перейдите на `https://your-domain.com`
+1. Откройте браузер и перейдите на `https://cardfly.online`
 2. Проверьте, что отображается главная страница
 3. Попробуйте зарегистрироваться
 4. Проверьте API endpoints

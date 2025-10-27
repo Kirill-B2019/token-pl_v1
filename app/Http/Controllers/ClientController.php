@@ -67,11 +67,16 @@ class ClientController extends Controller
             'card_number' => 'required|string',
             'expiry_date' => 'required|string',
             'cvv' => 'required|string',
+            'cardholder_name' => 'required|string',
+            'bank_code' => 'nullable|string|in:MTS,SBER,VTB,ALFA',
         ]);
 
         DB::beginTransaction();
         
         try {
+            // Generate unique transaction ID
+            $transactionId = 'TXN_' . time() . '_' . rand(1000, 9999);
+            
             // Create transaction
             $transaction = Transaction::create([
                 'user_id' => Auth::id(),
@@ -82,32 +87,118 @@ class ClientController extends Controller
                 'price' => $package->final_price,
                 'total_amount' => $package->final_price,
                 'payment_method' => $request->payment_method,
-                'payment_reference' => 'CARD_' . time(),
+                'payment_reference' => $transactionId,
                 'metadata' => [
                     'package_id' => $package->id,
                     'card_last_four' => substr($request->card_number, -4),
+                    'cardholder_name' => $request->cardholder_name,
+                    'bank_code' => $request->bank_code ?? 'MTS',
                 ],
             ]);
 
-            // Log audit
-            AuditLog::createLog(
-                'token_purchase_initiated',
-                'Transaction',
-                $transaction->id,
-                Auth::id(),
-                null,
-                $transaction->toArray()
-            );
+            // Process payment through selected bank
+            $paymentResult = $this->processPaymentThroughBank($request, $transaction, $package);
 
-            DB::commit();
-            
-            return redirect()->route('client.transactions.show', $transaction)
-                ->with('success', 'Покупка токенов инициирована. Ожидайте подтверждения.');
+            if ($paymentResult['success']) {
+                // Log audit
+                AuditLog::createLog(
+                    'token_purchase_initiated',
+                    'Transaction',
+                    $transaction->id,
+                    Auth::id(),
+                    null,
+                    $transaction->toArray()
+                );
+
+                DB::commit();
+                
+                return redirect()->route('client.transactions.show', $transaction)
+                    ->with('success', 'Покупка токенов инициирована. Ожидайте подтверждения.');
+            } else {
+                DB::rollBack();
+                
+                return back()->with('error', 'Ошибка при обработке платежа: ' . $paymentResult['error']);
+            }
                 
         } catch (\Exception $e) {
             DB::rollBack();
             
             return back()->with('error', 'Ошибка при обработке покупки: ' . $e->getMessage());
+        }
+    }
+
+    /**
+     * Process payment through selected bank
+     */
+    private function processPaymentThroughBank(Request $request, Transaction $transaction, TokenPackage $package): array
+    {
+        $bankCode = $request->bank_code ?? 'MTS';
+        
+        // Get bank configuration
+        $bank = \App\Models\Bank::where('code', $bankCode)->first();
+        if (!$bank || !$bank->is_active) {
+            return [
+                'success' => false,
+                'error' => 'Выбранный банк недоступен'
+            ];
+        }
+
+        // Prepare payment data
+        $paymentData = [
+            'merchant_id' => $bank->merchant_id,
+            'api_key' => $bank->api_key,
+            'transaction_id' => $transaction->payment_reference,
+            'amount' => $package->final_price,
+            'currency' => 'RUB',
+            'card_number' => $request->card_number,
+            'expiry_date' => $request->expiry_date,
+            'cvv' => $request->cvv,
+            'cardholder_name' => $request->cardholder_name,
+            'description' => "Покупка токенов {$package->name}",
+        ];
+
+        // Choose API endpoint based on bank
+        $apiEndpoint = match($bankCode) {
+            'MTS' => '/api/mts/payment',
+            'SBER' => '/api/bank/payment',
+            'VTB' => '/api/bank/payment',
+            'ALFA' => '/api/bank/payment',
+            default => '/api/bank/payment'
+        };
+
+        try {
+            // Make internal API call to process payment
+            $response = \Illuminate\Support\Facades\Http::post(
+                url($apiEndpoint),
+                $paymentData
+            );
+
+            if ($response->successful()) {
+                $responseData = $response->json();
+                
+                // Update transaction with bank response
+                $transaction->update([
+                    'metadata' => array_merge($transaction->metadata ?? [], [
+                        'bank_response' => $responseData,
+                        'bank_code' => $bankCode,
+                    ])
+                ]);
+
+                return [
+                    'success' => true,
+                    'data' => $responseData
+                ];
+            } else {
+                return [
+                    'success' => false,
+                    'error' => $response->json()['error'] ?? 'Ошибка обработки платежа'
+                ];
+            }
+        } catch (\Exception $e) {
+            return [
+                'success' => false,
+                'error' => 'Ошибка соединения с банком: ' . $e->getMessage()
+            ];
         }
     }
 
@@ -251,5 +342,40 @@ class ClientController extends Controller
         );
 
         return back()->with('success', 'Профиль обновлен успешно.');
+    }
+
+    /**
+     * Show payment success page
+     */
+    public function paymentSuccess(Request $request)
+    {
+        $transactionId = $request->get('transaction_id');
+        $transaction = null;
+        
+        if ($transactionId) {
+            $transaction = Transaction::where('payment_reference', $transactionId)
+                ->where('user_id', Auth::id())
+                ->first();
+        }
+        
+        return view('client.payment.success', compact('transaction'));
+    }
+
+    /**
+     * Show payment fail page
+     */
+    public function paymentFail(Request $request)
+    {
+        $transactionId = $request->get('transaction_id');
+        $error = $request->get('error', 'Неизвестная ошибка');
+        $transaction = null;
+        
+        if ($transactionId) {
+            $transaction = Transaction::where('payment_reference', $transactionId)
+                ->where('user_id', Auth::id())
+                ->first();
+        }
+        
+        return view('client.payment.fail', compact('transaction', 'error'));
     }
 }

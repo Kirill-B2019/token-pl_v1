@@ -5,6 +5,7 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Api\BrokerApiController;
 use App\Http\Controllers\Api\BankApiController;
 use App\Http\Controllers\Api\ExchangeApiController;
+use App\Http\Controllers\TronWalletController;
 
 /*
 |--------------------------------------------------------------------------
@@ -45,4 +46,24 @@ Route::prefix('exchange')->group(function () {
     Route::post('/sell', [ExchangeApiController::class, 'placeSellOrder']);
     Route::get('/order-status', [ExchangeApiController::class, 'getOrderStatus']);
     Route::post('/cancel-order', [ExchangeApiController::class, 'cancelOrder']);
+});
+
+// MTS Bank API routes
+Route::prefix('mts')->group(function () {
+    Route::post('/payment', [App\Http\Controllers\Api\MtsApiController::class, 'processPayment']);
+    Route::post('/refund', [App\Http\Controllers\Api\MtsApiController::class, 'processRefund']);
+    Route::get('/status', [App\Http\Controllers\Api\MtsApiController::class, 'getTransactionStatus']);
+    Route::post('/webhook', [App\Http\Controllers\Api\MtsApiController::class, 'handleWebhook']);
+});
+
+// TRON Wallet API routes
+Route::middleware('auth:sanctum')->prefix('tron')->group(function () {
+    Route::post('/wallet/create', [TronWalletController::class, 'createWallet']);
+    Route::get('/wallet', [TronWalletController::class, 'getWallet']);
+    Route::post('/wallet/sync', [TronWalletController::class, 'syncBalance']);
+    Route::post('/wallet/send-trx', [TronWalletController::class, 'sendTrx']);
+    Route::post('/wallet/send-usdt', [TronWalletController::class, 'sendUsdt']);
+    Route::get('/wallet/transactions', [TronWalletController::class, 'getTransactionHistory']);
+    Route::get('/wallet/qr-code', [TronWalletController::class, 'getQrCode']);
+    Route::post('/validate-address', [TronWalletController::class, 'validateAddress']);
 });

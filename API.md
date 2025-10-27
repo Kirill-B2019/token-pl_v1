@@ -2,7 +2,7 @@
 
 ## Общая информация
 
-Базовый URL: `https://your-domain.com/api`
+Базовый URL: `https://cardfly.online/api`
 
 Все API запросы должны содержать соответствующие заголовки аутентификации.
 
@@ -392,7 +392,7 @@
 ### Пример запроса на перевод токенов (cURL)
 
 ```bash
-curl -X POST "https://your-domain.com/api/broker/transfer" \
+curl -X POST "https://cardfly.online/api/broker/transfer" \
   -H "Content-Type: application/json" \
   -d '{
     "api_key": "your_broker_api_key",
@@ -406,7 +406,7 @@ curl -X POST "https://your-domain.com/api/broker/transfer" \
 ### Пример запроса на обработку платежа (cURL)
 
 ```bash
-curl -X POST "https://your-domain.com/api/bank/payment" \
+curl -X POST "https://cardfly.online/api/bank/payment" \
   -H "Content-Type: application/json" \
   -d '{
     "merchant_id": "MERCHANT_001",
@@ -424,7 +424,7 @@ curl -X POST "https://your-domain.com/api/bank/payment" \
 ### Пример запроса на получение цены токена (cURL)
 
 ```bash
-curl -X GET "https://your-domain.com/api/exchange/price?api_key=your_broker_api_key&token_symbol=BTC"
+curl -X GET "https://cardfly.online/api/exchange/price?api_key=your_broker_api_key&token_symbol=BTC"
 ```
 
 ## Лимиты и ограничения
