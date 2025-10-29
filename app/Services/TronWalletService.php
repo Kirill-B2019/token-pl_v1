@@ -1,4 +1,5 @@
 <?php
+// |KB Сервис TRON: генерация кошелька, синхронизация баланса, отправка TRX/USDT, история
 
 namespace App\Services;
 
@@ -294,5 +295,6 @@ class TronWalletService
         }
     }
 }
+
 
 

@@ -1,4 +1,5 @@
 <?php
+// |KB Контроллер API биржи: получение цены токена (эмуляция) и аудит изменений
 
 namespace App\Http\Controllers\Api;
 

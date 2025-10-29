@@ -1,4 +1,5 @@
 <?php
+// |KB Контроллер интеграции с МТС Банком: платежи, возвраты, статусы и вебхуки
 
 namespace App\Http\Controllers\Api;
 
@@ -500,5 +501,6 @@ class MtsApiController extends Controller
         return hash_equals($expectedSignature, $signature);
     }
 }
+
 
 

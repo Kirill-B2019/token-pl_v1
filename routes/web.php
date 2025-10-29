@@ -1,11 +1,12 @@
 <?php
+// |KB Веб-маршруты: главная (публичная), кабинеты клиента/брокера/админа и аутентификация
 
 use Illuminate\Support\Facades\Route;
 use Laravel\Fortify\Features;
 use Livewire\Volt\Volt;
 
 Route::get('/', function () {
-    return view('welcome');
+    return view('public.index');
 })->name('home');
 
 Route::view('dashboard', 'dashboard')

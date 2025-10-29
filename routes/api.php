@@ -1,10 +1,13 @@
 <?php
+// |KB Файл маршрутов API: брокер, банк, биржа, МТС и v1 публичные/пользовательские
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Api\BrokerApiController;
 use App\Http\Controllers\Api\BankApiController;
 use App\Http\Controllers\Api\ExchangeApiController;
+use App\Http\Controllers\Api\PublicApiController;
+use App\Http\Controllers\Api\UserApiController;
 use App\Http\Controllers\TronWalletController;
 
 /*
@@ -20,6 +23,32 @@ use App\Http\Controllers\TronWalletController;
 
 Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
     return $request->user();
+});
+
+// API v1 - Public endpoints
+Route::prefix('v1')->group(function () {
+    Route::get('/tokens', [PublicApiController::class, 'tokens']);
+    Route::get('/tokens/{symbol}', [PublicApiController::class, 'token']);
+    Route::get('/token-packages', [PublicApiController::class, 'tokenPackages']);
+    Route::get('/banks', [PublicApiController::class, 'banks']);
+    Route::get('/brokers', [PublicApiController::class, 'brokers']);
+
+    // API v1 - Authenticated user endpoints
+    Route::middleware('auth:sanctum')->group(function () {
+        Route::get('/me', [UserApiController::class, 'me']);
+        Route::get('/me/balances', [UserApiController::class, 'balances']);
+        Route::get('/me/transactions', [UserApiController::class, 'transactions']);
+
+        // Wallet aliases under v1 namespace (mirror existing tron routes)
+        Route::post('/wallet/create', [TronWalletController::class, 'createWallet']);
+        Route::get('/wallet', [TronWalletController::class, 'getWallet']);
+        Route::post('/wallet/sync', [TronWalletController::class, 'syncBalance']);
+        Route::post('/wallet/send-trx', [TronWalletController::class, 'sendTrx']);
+        Route::post('/wallet/send-usdt', [TronWalletController::class, 'sendUsdt']);
+        Route::get('/wallet/transactions', [TronWalletController::class, 'getTransactionHistory']);
+        Route::get('/wallet/qr-code', [TronWalletController::class, 'getQrCode']);
+        Route::post('/wallet/validate-address', [TronWalletController::class, 'validateAddress']);
+    });
 });
 
 // Broker API routes
