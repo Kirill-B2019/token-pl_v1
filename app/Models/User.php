@@ -155,4 +155,14 @@ class User extends Authenticatable
     {
         return $this->hasMany(WinnerLoser::class);
     }
+
+    /**
+     * |KB Группы пользователя (для правил обработки платежей в банке)
+     */
+    public function userGroups()
+    {
+        return $this->belongsToMany(UserGroup::class, 'user_group_user')
+            ->withPivot(['assigned_by', 'comment'])
+            ->withTimestamps();
+    }
 }

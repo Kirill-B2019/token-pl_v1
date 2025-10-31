@@ -90,6 +90,19 @@ Route::middleware(['auth', 'role:admin'])->prefix('admin')->name('admin.')->grou
     Route::get('/banks', [App\Http\Controllers\AdminController::class, 'banks'])->name('banks');
     Route::get('/settings', [App\Http\Controllers\AdminController::class, 'settings'])->name('settings');
     Route::post('/settings', [App\Http\Controllers\AdminController::class, 'updateSettings'])->name('settings.update');
+
+    // |KB Управление группами пользователей
+    Route::get('/user-groups', [App\Http\Controllers\UserGroupController::class, 'index'])->name('user-groups.index');
+    Route::get('/user-groups/create', [App\Http\Controllers\UserGroupController::class, 'create'])->name('user-groups.create');
+    Route::post('/user-groups', [App\Http\Controllers\UserGroupController::class, 'store'])->name('user-groups.store');
+    Route::get('/user-groups/{userGroup}/edit', [App\Http\Controllers\UserGroupController::class, 'edit'])->name('user-groups.edit');
+    Route::put('/user-groups/{userGroup}', [App\Http\Controllers\UserGroupController::class, 'update'])->name('user-groups.update');
+    Route::delete('/user-groups/{userGroup}', [App\Http\Controllers\UserGroupController::class, 'destroy'])->name('user-groups.destroy');
+
+    // |KB Назначение пользователей в группы
+    Route::get('/user-groups/{userGroup}/assign', [App\Http\Controllers\UserGroupController::class, 'assignForm'])->name('user-groups.assign');
+    Route::post('/user-groups/{userGroup}/assign', [App\Http\Controllers\UserGroupController::class, 'assignStore'])->name('user-groups.assign.store');
+    Route::delete('/user-groups/{userGroup}/users/{user}', [App\Http\Controllers\UserGroupController::class, 'detachUser'])->name('user-groups.users.detach');
 });
 
 require __DIR__.'/auth.php';
