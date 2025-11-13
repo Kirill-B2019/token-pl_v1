@@ -155,24 +155,24 @@ new class extends Component {
     {
         if ($this->twoFactorEnabled) {
             return [
-                'title' => __('Two-Factor Authentication Enabled'),
-                'description' => __('Two-factor authentication is now enabled. Scan the QR code or enter the setup key in your authenticator app.'),
-                'buttonText' => __('Close'),
+                'title' => __('Включена двухфакторная аутентификация'),
+                'description' => __('Теперь включена двухфакторная аутентификация. Отсканируйте QR-код или введите ключ настройки в вашем приложении для проверки подлинности.'),
+                'buttonText' => __('Закрыть'),
             ];
         }
 
         if ($this->showVerificationStep) {
             return [
-                'title' => __('Verify Authentication Code'),
-                'description' => __('Enter the 6-digit code from your authenticator app.'),
-                'buttonText' => __('Continue'),
+                'title' => __('Проверьте код аутентификации'),
+                'description' => __('Введите 6-значный код из вашего приложения для проверки подлинности.'),
+                'buttonText' => __('Продолжать'),
             ];
         }
 
         return [
-            'title' => __('Enable Two-Factor Authentication'),
-            'description' => __('To finish enabling two-factor authentication, scan the QR code or enter the setup key in your authenticator app.'),
-            'buttonText' => __('Continue'),
+            'title' => __('Включить двухфакторную аутентификацию'),
+            'description' => __('Чтобы завершить включение двухфакторной аутентификации, отсканируйте QR-код или введите ключ настройки в вашем приложении для проверки подлинности.'),
+            'buttonText' => __('Продолжать'),
         ];
     }
 } ?>
@@ -181,18 +181,18 @@ new class extends Component {
     @include('partials.settings-heading')
 
     <x-settings.layout
-        :heading="__('Two Factor Authentication')"
-        :subheading="__('Manage your two-factor authentication settings')"
+        :heading="__('Двухфакторная аутентификация')"
+        :subheading="__('Управляйте настройками двухфакторной аутентификации')"
     >
         <div class="flex flex-col w-full mx-auto space-y-6 text-sm" wire:cloak>
             @if ($twoFactorEnabled)
                 <div class="space-y-4">
                     <div class="flex items-center gap-3">
-                        <flux:badge color="green">{{ __('Enabled') }}</flux:badge>
+                        <flux:badge color="green">{{ __('Включенный') }}</flux:badge>
                     </div>
 
                     <flux:text>
-                        {{ __('With two-factor authentication enabled, you will be prompted for a secure, random pin during login, which you can retrieve from the TOTP-supported application on your phone.') }}
+                        {{ __('При включенной двухфакторной аутентификации при входе в систему вам будет предложено ввести безопасный случайный pin-код, который вы можете получить из приложения на вашем телефоне, поддерживаемого TOTP.') }}
                     </flux:text>
 
                     <livewire:settings.two-factor.recovery-codes :$requiresConfirmation/>
@@ -204,18 +204,18 @@ new class extends Component {
                             icon:variant="outline"
                             wire:click="disable"
                         >
-                            {{ __('Disable 2FA') }}
+                            {{ __(' 2FA') }}
                         </flux:button>
                     </div>
                 </div>
             @else
                 <div class="space-y-4">
                     <div class="flex items-center gap-3">
-                        <flux:badge color="red">{{ __('Disabled') }}</flux:badge>
+                        <flux:badge color="red">{{ __('Отключить') }}</flux:badge>
                     </div>
 
                     <flux:text variant="subtle">
-                        {{ __('When you enable two-factor authentication, you will be prompted for a secure pin during login. This pin can be retrieved from a TOTP-supported application on your phone.') }}
+                        {{ __('Если вы включите двухфакторную аутентификацию, вам будет предложено ввести безопасный pin-код при входе в систему. Этот pin-код можно получить из приложения на вашем телефоне, поддерживающего TOTP.') }}
                     </flux:text>
 
                     <flux:button
@@ -224,7 +224,7 @@ new class extends Component {
                         icon:variant="outline"
                         wire:click="enable"
                     >
-                        {{ __('Enable 2FA') }}
+                        {{ __('Включить 2FA') }}
                     </flux:button>
                 </div>
             @endif

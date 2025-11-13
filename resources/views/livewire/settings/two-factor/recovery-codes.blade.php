@@ -37,7 +37,7 @@ new class extends Component {
             try {
                 $this->recoveryCodes = json_decode(decrypt($user->two_factor_recovery_codes), true);
             } catch (Exception) {
-                $this->addError('recoveryCodes', 'Failed to load recovery codes');
+                $this->addError('recoveryCodes', 'Не удалось загрузить коды восстановления');
 
                 $this->recoveryCodes = [];
             }
@@ -53,10 +53,10 @@ new class extends Component {
     <div class="px-6 space-y-2">
         <div class="flex items-center gap-2">
             <flux:icon.lock-closed variant="outline" class="size-4"/>
-            <flux:heading size="lg" level="3">{{ __('2FA Recovery Codes') }}</flux:heading>
+            <flux:heading size="lg" level="3">{{ __('Коды восстановления 2FA') }}</flux:heading>
         </div>
         <flux:text variant="subtle">
-            {{ __('Recovery codes let you regain access if you lose your 2FA device. Store them in a secure password manager.') }}
+            {{ __('Коды восстановления позволяют восстановить доступ в случае утери устройства 2FA. Сохраните их в безопасном менеджере паролей.') }}
         </flux:text>
     </div>
 
@@ -71,7 +71,7 @@ new class extends Component {
                 aria-expanded="false"
                 aria-controls="recovery-codes-section"
             >
-                {{ __('View Recovery Codes') }}
+                {{ __('Просмотр кодов восстановления') }}
             </flux:button>
 
             <flux:button
@@ -83,7 +83,7 @@ new class extends Component {
                 aria-expanded="true"
                 aria-controls="recovery-codes-section"
             >
-                {{ __('Hide Recovery Codes') }}
+                {{ __('Скрыть коды восстановления') }}
             </flux:button>
 
             @if (filled($recoveryCodes))
@@ -93,7 +93,7 @@ new class extends Component {
                     variant="filled"
                     wire:click="regenerateRecoveryCodes"
                 >
-                    {{ __('Regenerate Codes') }}
+                    {{ __('Восстанавливать коды') }}
                 </flux:button>
             @endif
         </div>
@@ -114,7 +114,7 @@ new class extends Component {
                     <div
                         class="grid gap-1 p-4 font-mono text-sm rounded-lg bg-zinc-100 dark:bg-white/5"
                         role="list"
-                        aria-label="Recovery codes"
+                        aria-label="Коды восстановления"
                     >
                         @foreach($recoveryCodes as $code)
                             <div
@@ -127,7 +127,7 @@ new class extends Component {
                         @endforeach
                     </div>
                     <flux:text variant="subtle" class="text-xs">
-                        {{ __('Each recovery code can be used once to access your account and will be removed after use. If you need more, click Regenerate Codes above.') }}
+                        {{ __('Каждый код восстановления может быть использован один раз для доступа к вашей учетной записи и будет удален после использования. Если вам нужны дополнительные коды, нажмите Восстановить коды выше.') }}
                     </flux:text>
                 @endif
             </div>
