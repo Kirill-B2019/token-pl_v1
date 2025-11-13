@@ -82,4 +82,12 @@ class Broker extends Model
     {
         return $query->where('is_active', true);
     }
+
+    /**
+     * Связь с пользователем (User)
+     */
+    public function user()
+    {
+        return $this->belongsTo(User::class);
+    }
 }
