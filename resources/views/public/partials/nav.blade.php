@@ -2,12 +2,12 @@
     <nav>
         <div class="nav-container">
             <a href="#top" class="logo">CARDFLY-CRYPTO</a>
-            <ul class="nav-links">
+            {{--<ul class="nav-links">
                 <li><a href="#features">Features</a></li>
                 <li><a href="#pricing">Pricing</a></li>
                 <li><a href="#stats">Stats</a></li>
                 <li><a href="#contact">Contact</a></li>
-            </ul>
+            </ul>--}}
             <div class="nav-bottom">
                 <a href="{{ route('login') }}" class="cyber-button">Вход</a>
             </div>

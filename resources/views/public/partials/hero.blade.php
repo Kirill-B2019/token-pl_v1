@@ -7,7 +7,7 @@
             <p class="hero-subtitle">Система управления цифровыми активами. Безопасно. Быстро. Масштабируемо.</p>
             <div class="hero-buttons">
                 <a href="{{ route('register') }}" class="btn-primary">Начать</a>
-                <a href="{{ url('/api/docs') }}" class="btn-secondary">Документация</a>
+                <a href="{{ url('https://deepwiki.com/Kirill-B2019/token-pl_v1') }}" class="btn-secondary">Документация</a>
             </div>
         </div>
     </section>
