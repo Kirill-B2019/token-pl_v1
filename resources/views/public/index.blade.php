@@ -4,9 +4,9 @@
 @section('content')
     @include('public.partials.hero')
     @include('public.partials.stats')
-    @include('public.partials.features')
+{{--    @include('public.partials.features')
     @include('public.partials.pricing')
-    @include('public.partials.contact')
+    @include('public.partials.contact')--}}
 @endsection
 
 

@@ -32,13 +32,13 @@
                         :label="__('Repository')"
                     />
                 </flux:tooltip>
-                <flux:tooltip :content="__('Documentation')" position="bottom">
+                <flux:tooltip :content="__('Документация')" position="bottom">
                     <flux:navbar.item
                         class="h-10 max-lg:hidden [&>div>svg]:size-5"
                         icon="book-open-text"
-                        href="https://laravel.com/docs/starter-kits#livewire"
+                        href="https://deepwiki.com/Kirill-B2019/token-pl_v1"
                         target="_blank"
-                        label="Documentation"
+                        label="Документация"
                     />
                 </flux:tooltip>
             </flux:navbar>
@@ -81,7 +81,7 @@
                     <form method="POST" action="{{ route('logout') }}" class="w-full">
                         @csrf
                         <flux:menu.item as="button" type="submit" icon="arrow-right-start-on-rectangle" class="w-full" data-test="logout-button">
-                            {{ __('Log Out') }}
+                            {{ __('Выход') }}
                         </flux:menu.item>
                     </form>
                 </flux:menu>
@@ -97,7 +97,7 @@
             </a>
 
             <flux:navlist variant="outline">
-                <flux:navlist.group :heading="__('Platform')">
+                <flux:navlist.group :heading="__('Токен платформа')">
                     <flux:navlist.item icon="layout-grid" :href="route('dashboard')" :current="request()->routeIs('dashboard')" wire:navigate>
                     {{ __('Dashboard') }}
                     </flux:navlist.item>

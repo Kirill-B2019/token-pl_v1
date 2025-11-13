@@ -9,6 +9,26 @@ Route::get('/', function () {
     return view('public.index');
 })->name('home');
 
+Route::middleware(['auth', 'verified'])
+    ->get('/home', function () {
+        $user = auth()->user();
+
+        if ($user?->isAdmin()) {
+            return redirect()->route('admin.dashboard');
+        }
+
+        if ($user?->isBroker()) {
+            return redirect()->route('broker.dashboard');
+        }
+
+        if ($user?->isClient()) {
+            return redirect()->route('client.dashboard');
+        }
+
+        return redirect()->route('dashboard');
+    })
+    ->name('home.redirect');
+
 Route::view('dashboard', 'dashboard')
     ->middleware(['auth', 'verified'])
     ->name('dashboard');

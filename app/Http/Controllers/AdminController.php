@@ -62,7 +62,7 @@ class AdminController extends Controller
      */
     public function showUser(User $user)
     {
-        $user->load(['transactions.token', 'balances.token', 'winnerLosers.token']);
+        $user->load(['transactions.token', 'balances.token', 'winnerLosers.token', 'userGroups']);
         
         return view('admin.user', compact('user'));
     }

@@ -22,6 +22,14 @@
             </div>
 
             @if($transaction)
+            @php($statusLabels = [
+                'pending' => 'В ожидании',
+                'processing' => 'В обработке',
+                'completed' => 'Завершено',
+                'failed' => 'Ошибка',
+                'cancelled' => 'Отменено',
+            ])
+
             <!-- Transaction Details -->
             <div class="bg-gray-50 rounded-lg p-4 mb-6">
                 <h2 class="text-lg font-semibold text-gray-800 mb-4">Детали транзакции</h2>
@@ -41,7 +49,7 @@
                     <div class="flex justify-between">
                         <span class="text-gray-600">Статус:</span>
                         <span class="px-2 py-1 bg-red-100 text-red-800 rounded-full text-sm">
-                            {{ ucfirst($transaction->status) }}
+                            {{ $statusLabels[$transaction->status] ?? ucfirst($transaction->status) }}
                         </span>
                     </div>
                     <div class="flex justify-between">

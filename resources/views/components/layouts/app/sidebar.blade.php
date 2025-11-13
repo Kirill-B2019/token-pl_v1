@@ -4,30 +4,56 @@
         @include('partials.head')
     </head>
     <body class="min-h-screen bg-white dark:bg-zinc-800">
+        @php
+            $user = auth()->user();
+            $role = $user?->role;
+        @endphp
+
         <flux:sidebar sticky stashable class="border-e border-zinc-200 bg-zinc-50 dark:border-zinc-700 dark:bg-zinc-900">
             <flux:sidebar.toggle class="lg:hidden" icon="x-mark" />
 
-            <a href="{{ route('dashboard') }}" class="me-5 flex items-center space-x-2 rtl:space-x-reverse" wire:navigate>
+            <a href="{{ route('home.redirect') }}" class="me-5 flex items-center space-x-2 rtl:space-x-reverse" wire:navigate>
                 <x-app-logo />
             </a>
 
             <flux:navlist variant="outline">
-                <flux:navlist.group :heading="__('Platform')" class="grid">
-                    <flux:navlist.item icon="home" :href="route('dashboard')" :current="request()->routeIs('dashboard')" wire:navigate>{{ __('Dashboard') }}</flux:navlist.item>
+                <flux:navlist.group heading="Навигация" class="grid">
+                    <flux:navlist.item icon="home" :href="route('home.redirect')" :current="request()->routeIs('home.redirect')" wire:navigate>Главная</flux:navlist.item>
                 </flux:navlist.group>
+
+                @if($role === 'admin')
+                    <flux:navlist.group heading="Администрирование" class="grid">
+                        <flux:navlist.item :href="route('admin.dashboard')" :current="request()->routeIs('admin.dashboard')" wire:navigate>Панель администратора</flux:navlist.item>
+                        <flux:navlist.item :href="route('admin.users')" :current="request()->routeIs('admin.users') || request()->routeIs('admin.users.show')" wire:navigate>Пользователи</flux:navlist.item>
+                        <flux:navlist.item :href="route('admin.user-groups.index')" :current="request()->routeIs('admin.user-groups.*')" wire:navigate>Группы пользователей</flux:navlist.item>
+                        <flux:navlist.item :href="route('admin.transactions')" :current="request()->routeIs('admin.transactions') || request()->routeIs('admin.transactions.show')" wire:navigate>Транзакции</flux:navlist.item>
+                        <flux:navlist.item :href="route('admin.tokens')" :current="request()->routeIs('admin.tokens') || request()->routeIs('admin.tokens.create')" wire:navigate>Токены</flux:navlist.item>
+                        <flux:navlist.item :href="route('admin.winners-losers')" :current="request()->routeIs('admin.winners-losers*')" wire:navigate>Победители и проигравшие</flux:navlist.item>
+                        <flux:navlist.item :href="route('admin.banks')" :current="request()->routeIs('admin.banks')" wire:navigate>Банки</flux:navlist.item>
+                        <flux:navlist.item :href="route('admin.brokers')" :current="request()->routeIs('admin.brokers')" wire:navigate>Брокеры</flux:navlist.item>
+                        <flux:navlist.item :href="route('admin.audit-logs')" :current="request()->routeIs('admin.audit-logs')" wire:navigate>Журнал действий</flux:navlist.item>
+                        <flux:navlist.item :href="route('admin.settings')" :current="request()->routeIs('admin.settings')" wire:navigate>Настройки системы</flux:navlist.item>
+                    </flux:navlist.group>
+                @elseif($role === 'broker')
+                    <flux:navlist.group heading="Рабочий кабинет" class="grid">
+                        <flux:navlist.item :href="route('broker.dashboard')" :current="request()->routeIs('broker.dashboard')" wire:navigate>Панель брокера</flux:navlist.item>
+                        <flux:navlist.item :href="route('broker.tokens')" :current="request()->routeIs('broker.tokens')" wire:navigate>Токены</flux:navlist.item>
+                        <flux:navlist.item :href="route('broker.reserves')" :current="request()->routeIs('broker.reserves')" wire:navigate>Резервы</flux:navlist.item>
+                        <flux:navlist.item :href="route('broker.setup')" :current="request()->routeIs('broker.setup')" wire:navigate>Настройки брокера</flux:navlist.item>
+                    </flux:navlist.group>
+                @else
+                    <flux:navlist.group heading="Личный кабинет" class="grid">
+                        <flux:navlist.item :href="route('client.dashboard')" :current="request()->routeIs('client.dashboard')" wire:navigate>Панель клиента</flux:navlist.item>
+                        <flux:navlist.item :href="route('client.packages')" :current="request()->routeIs('client.packages*')" wire:navigate>Пакеты токенов</flux:navlist.item>
+                        <flux:navlist.item :href="route('client.transactions')" :current="request()->routeIs('client.transactions*')" wire:navigate>Мои транзакции</flux:navlist.item>
+                        <flux:navlist.item :href="route('client.wallet')" :current="request()->routeIs('client.wallet*')" wire:navigate>TRON кошелёк</flux:navlist.item>
+                        <flux:navlist.item :href="route('client.sell')" :current="request()->routeIs('client.sell*')" wire:navigate>Продажа токенов</flux:navlist.item>
+                        <flux:navlist.item :href="route('client.profile')" :current="request()->routeIs('client.profile')" wire:navigate>Профиль</flux:navlist.item>
+                    </flux:navlist.group>
+                @endif
             </flux:navlist>
 
             <flux:spacer />
-
-            <flux:navlist variant="outline">
-                <flux:navlist.item icon="folder-git-2" href="https://github.com/laravel/livewire-starter-kit" target="_blank">
-                {{ __('Repository') }}
-                </flux:navlist.item>
-
-                <flux:navlist.item icon="book-open-text" href="https://laravel.com/docs/starter-kits#livewire" target="_blank">
-                {{ __('Documentation') }}
-                </flux:navlist.item>
-            </flux:navlist>
 
             <!-- Desktop User Menu -->
             <flux:dropdown class="hidden lg:block" position="bottom" align="start">
@@ -61,7 +87,7 @@
                     <flux:menu.separator />
 
                     <flux:menu.radio.group>
-                        <flux:menu.item :href="route('profile.edit')" icon="cog" wire:navigate>{{ __('Settings') }}</flux:menu.item>
+                        <flux:menu.item :href="route('profile.edit')" icon="cog" wire:navigate>Настройки профиля</flux:menu.item>
                     </flux:menu.radio.group>
 
                     <flux:menu.separator />
@@ -69,7 +95,7 @@
                     <form method="POST" action="{{ route('logout') }}" class="w-full">
                         @csrf
                         <flux:menu.item as="button" type="submit" icon="arrow-right-start-on-rectangle" class="w-full" data-test="logout-button">
-                            {{ __('Log Out') }}
+                            Выйти
                         </flux:menu.item>
                     </form>
                 </flux:menu>
@@ -111,7 +137,7 @@
                     <flux:menu.separator />
 
                     <flux:menu.radio.group>
-                        <flux:menu.item :href="route('profile.edit')" icon="cog" wire:navigate>{{ __('Settings') }}</flux:menu.item>
+                        <flux:menu.item :href="route('profile.edit')" icon="cog" wire:navigate>Настройки профиля</flux:menu.item>
                     </flux:menu.radio.group>
 
                     <flux:menu.separator />
@@ -119,7 +145,7 @@
                     <form method="POST" action="{{ route('logout') }}" class="w-full">
                         @csrf
                         <flux:menu.item as="button" type="submit" icon="arrow-right-start-on-rectangle" class="w-full" data-test="logout-button">
-                            {{ __('Log Out') }}
+                            Выйти
                         </flux:menu.item>
                     </form>
                 </flux:menu>
@@ -128,6 +154,7 @@
 
         {{ $slot }}
 
+        @stack('scripts')
         @fluxScripts
     </body>
 </html>
