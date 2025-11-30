@@ -66,8 +66,22 @@ Route::middleware(['auth', 'role:client'])->prefix('client')->name('client.')->g
     Route::post('/profile', [App\Http\Controllers\ClientController::class, 'updateProfile'])->name('profile.update');
     
     // Payment result pages
-    Route::get('/payment/success', [App\Http\Controllers\ClientController::class, 'paymentSuccess'])->name('payment.success');
-    Route::get('/payment/fail', [App\Http\Controllers\ClientController::class, 'paymentFail'])->name('payment.fail');
+    Route::get('/payment/success', [App\Http\Controllers\TwoCanPaymentController::class, 'paymentSuccess'])->name('payment.success');
+    Route::get('/payment/fail', [App\Http\Controllers\TwoCanPaymentController::class, 'paymentFail'])->name('payment.fail');
+
+    // 2can webhook
+    Route::post('/payment/webhook', [App\Http\Controllers\TwoCanPaymentController::class, 'webhook'])->name('payment.webhook');
+    
+    // Balance top-up via 2can
+    Route::get('/balance/topup', [App\Http\Controllers\TwoCanPaymentController::class, 'showTopUpForm'])->name('balance.topup');
+    Route::post('/balance/topup', [App\Http\Controllers\TwoCanPaymentController::class, 'createPayment'])->name('balance.topup.submit');
+
+    // Card management
+    Route::get('/cards', [App\Http\Controllers\CardController::class, 'index'])->name('cards.index');
+    Route::get('/cards/attach', [App\Http\Controllers\CardController::class, 'showAttachForm'])->name('cards.attach');
+    Route::post('/cards/attach', [App\Http\Controllers\CardController::class, 'attachCard'])->name('cards.attach.submit');
+    Route::patch('/cards/{card}/default', [App\Http\Controllers\CardController::class, 'setDefault'])->name('cards.set-default');
+    Route::delete('/cards/{card}', [App\Http\Controllers\CardController::class, 'delete'])->name('cards.delete');
     
     // TRON Wallet routes
     Route::get('/wallet', [App\Http\Controllers\TronWalletController::class, 'index'])->name('wallet');

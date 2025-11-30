@@ -63,7 +63,7 @@ class UserApiController extends Controller
         $validator = Validator::make($request->all(), [
             'limit' => 'nullable|integer|min:1|max:100',
             'status' => 'nullable|in:pending,completed,failed,cancelled,refunded',
-            'type' => 'nullable|in:buy,sell,transfer,refund',
+            'type' => 'nullable|in:buy,sell,transfer,refund,deposit',
         ]);
         if ($validator->fails()) {
             return response()->json(['error' => $validator->errors()], 400);

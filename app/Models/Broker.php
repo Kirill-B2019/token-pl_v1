@@ -9,6 +9,7 @@ use Illuminate\Support\Facades\Crypt;
 class Broker extends Model
 {
     protected $fillable = [
+        'user_id',
         'name',
         'api_key',
         'api_secret',

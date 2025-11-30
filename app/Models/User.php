@@ -31,6 +31,7 @@ class User extends Authenticatable
         'two_factor_recovery_codes',
         'is_active',
         'last_login_at',
+        'balance_rub',
     ];
 
     /**
@@ -59,6 +60,7 @@ class User extends Authenticatable
             'two_factor_recovery_codes' => 'array',
             'is_active' => 'boolean',
             'last_login_at' => 'datetime',
+            'balance_rub' => 'decimal:2',
         ];
     }
 
@@ -157,6 +159,30 @@ class User extends Authenticatable
     }
 
     /**
+     * Get user cards
+     */
+    public function cards()
+    {
+        return $this->hasMany(UserCard::class);
+    }
+
+    /**
+     * Get active user cards
+     */
+    public function activeCards()
+    {
+        return $this->hasMany(UserCard::class)->where('is_active', true);
+    }
+
+    /**
+     * Get default card
+     */
+    public function defaultCard()
+    {
+        return $this->hasOne(UserCard::class)->where('is_default', true);
+    }
+
+    /**
      * |KB Группы пользователя (для правил обработки платежей в банке)
      */
     public function userGroups()
@@ -164,5 +190,43 @@ class User extends Authenticatable
         return $this->belongsToMany(UserGroup::class, 'user_group_user')
             ->withPivot(['assigned_by', 'comment'])
             ->withTimestamps();
+    }
+
+    /**
+     * Add to RUB balance
+     */
+    public function addRubBalance(float $amount): bool
+    {
+        $this->balance_rub += $amount;
+        return $this->save();
+    }
+
+    /**
+     * Subtract from RUB balance
+     */
+    public function subtractRubBalance(float $amount): bool
+    {
+        if ($this->balance_rub < $amount) {
+            return false;
+        }
+
+        $this->balance_rub -= $amount;
+        return $this->save();
+    }
+
+    /**
+     * Check if user has enough RUB balance
+     */
+    public function hasEnoughRubBalance(float $amount): bool
+    {
+        return $this->balance_rub >= $amount;
+    }
+
+    /**
+     * Get formatted RUB balance
+     */
+    public function getFormattedRubBalanceAttribute(): string
+    {
+        return number_format($this->balance_rub, 2, '.', ' ') . ' ₽';
     }
 }

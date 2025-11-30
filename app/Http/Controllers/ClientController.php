@@ -345,6 +345,150 @@ class ClientController extends Controller
     }
 
     /**
+<<<<<<< Current (Your changes)
+=======
+     * Show balance top-up form
+     */
+    public function showTopUp()
+    {
+        return view('client.balance.topup');
+    }
+
+    /**
+>>>>>>> Incoming (Background Agent changes)
+     * Process balance top-up
+     */
+    public function topUpBalance(Request $request)
+    {
+        $request->validate([
+            'amount' => 'required|numeric|min:1|max:1000000',
+            'bank_code' => 'required|string|in:MTS,SBER,VTB,ALFA',
+        ]);
+
+        $user = Auth::user();
+        $amount = $request->amount;
+        $bankCode = $request->bank_code;
+
+        // Get bank
+        $bank = \App\Models\Bank::where('code', $bankCode)
+            ->where('is_active', true)
+            ->first();
+
+        if (!$bank) {
+            return back()->with('error', 'Выбранный банк недоступен.');
+        }
+
+        // Calculate commission
+        $commission = $bank->calculateCommission($amount);
+        $finalAmount = $amount - $commission;
+
+        DB::beginTransaction();
+
+        try {
+            // Generate unique transaction ID
+            $transactionId = 'TXN_' . time() . '_' . rand(1000, 9999);
+
+            // Create transaction
+            $transaction = Transaction::create([
+                'user_id' => $user->id,
+                'token_id' => null, // Balance top-up doesn't require token
+                'type' => 'deposit', // New transaction type for balance top-up
+                'status' => 'pending',
+                'amount' => $finalAmount, // Amount after commission
+                'price' => 1, // 1 RUB = 1 RUB
+                'total_amount' => $amount, // Total amount including commission
+                'fee' => $commission,
+                'payment_method' => 'bank_card',
+                'payment_reference' => $transactionId,
+                'metadata' => [
+                    'bank_code' => $bankCode,
+                    'bank_name' => $bank->name,
+                    'original_amount' => $amount,
+                    'commission' => $commission,
+                    'final_amount' => $finalAmount,
+                    'transaction_type' => 'balance_topup',
+                ],
+            ]);
+
+            // Process payment through bank API
+            $paymentData = [
+                'merchant_id' => $bank->merchant_id,
+                'api_key' => $bank->api_key,
+                'transaction_id' => $transactionId,
+                'amount' => $amount,
+                'currency' => 'RUB',
+                'description' => 'Пополнение баланса на сумму ' . $amount . ' ₽',
+            ];
+
+            // Determine API endpoint based on bank
+            $apiEndpoint = match($bankCode) {
+                'MTS' => '/api/mts/payment',
+                default => '/api/bank/payment'
+            };
+
+            // Make API call to process payment
+            $response = \Illuminate\Support\Facades\Http::post(
+                url($apiEndpoint),
+                $paymentData
+            );
+
+            if ($response->successful()) {
+                $responseData = $response->json();
+
+                // Update transaction
+                $transaction->update([
+                    'status' => 'completed',
+                    'processed_at' => now(),
+                    'metadata' => array_merge($transaction->metadata ?? [], [
+                        'bank_response' => $responseData,
+                        'bank_transaction_id' => $responseData['bank_transaction_id'] ?? null,
+                    ])
+                ]);
+
+                // Log audit
+                AuditLog::createLog(
+                    'balance_topup_completed',
+                    'Transaction',
+                    $transaction->id,
+                    $user->id,
+                    null,
+                    $transaction->toArray()
+                );
+
+                DB::commit();
+
+                return redirect()->route('client.payment.success', ['transaction_id' => $transactionId])
+                    ->with('success', 'Баланс успешно пополнен на сумму ' . number_format($finalAmount, 2, '.', ' ') . ' ₽');
+            } else {
+                $error = $response->json()['error'] ?? 'Ошибка обработки платежа';
+                
+                $transaction->update([
+                    'status' => 'failed',
+                    'metadata' => array_merge($transaction->metadata ?? [], [
+                        'error' => $error,
+                    ])
+                ]);
+
+                DB::rollBack();
+
+                return redirect()->route('client.payment.fail', [
+                    'transaction_id' => $transactionId,
+                    'error' => $error
+                ])->with('error', 'Ошибка при пополнении баланса: ' . $error);
+            }
+
+        } catch (\Exception $e) {
+            DB::rollBack();
+
+            if (isset($transaction)) {
+                $transaction->markAsFailed();
+            }
+
+            return back()->with('error', 'Ошибка при пополнении баланса: ' . $e->getMessage());
+        }
+    }
+
+    /**
      * Show payment success page
      */
     public function paymentSuccess(Request $request)
@@ -377,5 +521,22 @@ class ClientController extends Controller
         }
         
         return view('client.payment.fail', compact('transaction', 'error'));
+    }
+
+    /**
+     * Show attach card form
+     */
+    public function showAttachCard()
+    {
+        return view('client.cards.attach');
+    }
+
+    /**
+     * Process card attachment
+     */
+    public function attachCard(Request $request)
+    {
+        // TODO: Implement card attachment logic
+        return back()->with('success', 'Карта успешно привязана.');
     }
 }
