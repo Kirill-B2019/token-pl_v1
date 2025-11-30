@@ -606,3 +606,322 @@ const transactions = await api.getTransactions({ page: 1, per_page: 10 });
 API использует версионирование через URL:
 - `v1` - текущая версия (активна)
 
+## Специфические API endpoints проекта
+
+### Аутентификация по ролям
+
+#### Брокер API
+Используйте API ключ брокера в параметре `api_key`.
+
+#### Банк API
+Используйте `merchant_id` и `api_key` в параметрах запроса.
+
+#### Пользовательские эндпоинты (Sanctum)
+Передавайте пользовательский токен в заголовке `Authorization: Bearer <token>`.
+
+### Публичные эндпоинты
+
+#### GET /api/v1/tokens
+Получить список всех доступных токенов.
+
+**Ответ:**
+```json
+{
+  "tokens": [
+    {
+      "symbol": "BTC",
+      "name": "Bitcoin",
+      "current_price": "50000.00",
+      "total_supply": "21000000.00000000",
+      "available_supply": "1000000.00000000"
+    }
+  ],
+  "timestamp": "2025-01-01T12:00:00.000000Z"
+}
+```
+
+#### GET /api/v1/tokens/{symbol}
+Получить информацию о конкретном токене.
+
+**Параметры:**
+- `symbol` - символ токена (BTC, ETH, etc.)
+
+**Ответ:**
+```json
+{
+  "token": {
+    "symbol": "BTC",
+    "name": "Bitcoin",
+    "current_price": "50000.00",
+    "total_supply": "21000000.00000000",
+    "available_supply": "1000000.00000000",
+    "metadata": {}
+  }
+}
+```
+
+#### GET /api/v1/token-packages
+Получить список пакетов токенов.
+
+**Ответ:**
+```json
+{
+  "packages": [
+    {
+      "id": 1,
+      "name": "Starter",
+      "description": "Начальный пакет токенов",
+      "token_amount": "100.00000000",
+      "price": "100.00",
+      "discount_percentage": "0.00",
+      "final_price": 100.0,
+      "savings_amount": 0.0
+    }
+  ],
+  "count": 1
+}
+```
+
+#### GET /api/v1/banks
+Получить список доступных банков.
+
+**Ответ:**
+```json
+{
+  "banks": [
+    {
+      "id": 1,
+      "name": "MTS Bank",
+      "code": "MTS"
+    }
+  ]
+}
+```
+
+#### GET /api/v1/brokers
+Получить список доступных брокеров.
+
+**Ответ:**
+```json
+{
+  "brokers": [
+    {
+      "id": 1,
+      "name": "Default Broker"
+    }
+  ]
+}
+```
+
+### Пользовательские эндпоинты
+
+#### GET /api/v1/me
+Получить информацию о текущем пользователе.
+
+**Заголовки:**
+```
+Authorization: Bearer <token>
+```
+
+**Ответ:**
+```json
+{
+  "id": 123,
+  "name": "User",
+  "email": "user@example.com",
+  "email_verified_at": null,
+  "created_at": "2025-01-01T12:00:00.000000Z"
+}
+```
+
+#### GET /api/v1/me/balances
+Получить балансы токенов пользователя.
+
+**Заголовки:**
+```
+Authorization: Bearer <token>
+```
+
+**Ответ:**
+```json
+{
+  "balances": [
+    {
+      "token_symbol": "BTC",
+      "token_name": "Bitcoin",
+      "balance": "1.00000000",
+      "locked_balance": "0.00000000",
+      "available_balance": 1.0
+    }
+  ]
+}
+```
+
+#### GET /api/v1/me/transactions
+Получить историю транзакций пользователя.
+
+**Заголовки:**
+```
+Authorization: Bearer <token>
+```
+
+**Параметры запроса:**
+- `limit` - количество записей (по умолчанию: 50)
+- `status` - фильтр по статусу
+- `type` - фильтр по типу операции
+
+**Ответ:**
+```json
+{
+  "transactions": [
+    {
+      "transaction_id": "TXN_ABC",
+      "status": "completed",
+      "type": "buy",
+      "token_symbol": "BTC",
+      "amount": "0.10000000",
+      "price": "50000.00",
+      "total_amount": "5000.00",
+      "created_at": "2025-01-01T12:00:00.000000Z",
+      "processed_at": "2025-01-01T12:00:01.000000Z"
+    }
+  ],
+  "count": 1
+}
+```
+
+### TRON Wallet API
+
+Эндпоинты для работы с TRON кошельками. Дублируют функциональность `/tron/*` endpoints.
+
+#### POST /api/v1/wallet/create
+Создать новый TRON кошелек.
+
+**Заголовки:**
+```
+Authorization: Bearer <token>
+```
+
+#### GET /api/v1/wallet
+Получить информацию о кошельке пользователя.
+
+**Заголовки:**
+```
+Authorization: Bearer <token>
+```
+
+#### POST /api/v1/wallet/sync
+Синхронизировать баланс кошелька с блокчейном.
+
+**Заголовки:**
+```
+Authorization: Bearer <token>
+```
+
+#### POST /api/v1/wallet/send-trx
+Отправить TRX на указанный адрес.
+
+**Заголовки:**
+```
+Authorization: Bearer <token>
+Content-Type: application/json
+```
+
+**Тело запроса:**
+```json
+{
+  "to_address": "TXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX",
+  "amount": 1.25
+}
+```
+
+#### POST /api/v1/wallet/send-usdt
+Отправить USDT на указанный адрес.
+
+**Заголовки:**
+```
+Authorization: Bearer <token>
+Content-Type: application/json
+```
+
+**Тело запроса:**
+```json
+{
+  "to_address": "TXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX",
+  "amount": 100.50
+}
+```
+
+#### GET /api/v1/wallet/transactions
+Получить историю транзакций кошелька.
+
+**Заголовки:**
+```
+Authorization: Bearer <token>
+```
+
+**Параметры:**
+- `limit` - количество записей (по умолчанию: 50)
+
+#### GET /api/v1/wallet/qr-code
+Получить данные для генерации QR-кода кошелька.
+
+**Заголовки:**
+```
+Authorization: Bearer <token>
+```
+
+#### POST /api/v1/wallet/validate-address
+Валидировать TRON адрес.
+
+**Заголовки:**
+```
+Authorization: Bearer <token>
+Content-Type: application/json
+```
+
+**Тело запроса:**
+```json
+{
+  "address": "TXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX"
+}
+```
+
+## Примеры использования
+
+### Публичные данные
+```bash
+# Получить список токенов
+curl -X GET "https://cardfly.online/api/v1/tokens"
+
+# Получить информацию о Bitcoin
+curl -X GET "https://cardfly.online/api/v1/tokens/BTC"
+```
+
+### Работа с профилем
+```bash
+# Получить профиль пользователя
+curl -X GET "https://cardfly.online/api/v1/me" \
+  -H "Authorization: Bearer YOUR_SANCTUM_TOKEN"
+
+# Получить балансы
+curl -X GET "https://cardfly.online/api/v1/me/balances" \
+  -H "Authorization: Bearer YOUR_SANCTUM_TOKEN"
+```
+
+### TRON кошелек
+```bash
+# Создать кошелек
+curl -X POST "https://cardfly.online/api/v1/wallet/create" \
+  -H "Authorization: Bearer YOUR_SANCTUM_TOKEN"
+
+# Отправить TRX
+curl -X POST "https://cardfly.online/api/v1/wallet/send-trx" \
+  -H "Authorization: Bearer YOUR_SANCTUM_TOKEN" \
+  -H "Content-Type: application/json" \
+  -d '{
+    "to_address": "TXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX",
+    "amount": 1.25
+  }'
+```
+
