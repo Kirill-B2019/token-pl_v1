@@ -113,7 +113,7 @@ php artisan migrate
 ### Настройка webhook
 В личном кабинете 2can укажите URL:
 ```
-https://your-domain.com/client/payment/webhook
+https://cardfly.online/client/payment/webhook
 ```
 
 ### Сервер

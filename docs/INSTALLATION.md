@@ -168,7 +168,7 @@ TWOCAN_WEBHOOK_SECRET=your_webhook_secret
 
 В личном кабинете 2can укажите URL для webhook:
 ```
-https://your-domain.com/client/payment/webhook
+https://cardfly.online/client/payment/webhook
 ```
 
 ## Настройка веб-сервера
@@ -178,7 +178,7 @@ https://your-domain.com/client/payment/webhook
 ```nginx
 server {
     listen 80;
-    server_name your-domain.com www.your-domain.com;
+    server_name cardfly.online www.cardfly.online;
     root /var/www/token-platform/public;
     index index.php index.html;
 
@@ -222,8 +222,8 @@ server {
 
 ```apache
 <VirtualHost *:80>
-    ServerName your-domain.com
-    ServerAlias www.your-domain.com
+    ServerName cardfly.online
+    ServerAlias www.cardfly.online
     DocumentRoot /var/www/token-platform/public
 
     <Directory /var/www/token-platform/public>
@@ -245,7 +245,7 @@ server {
 sudo apt install certbot python3-certbot-nginx
 
 # Получение сертификата
-sudo certbot --nginx -d your-domain.com -d www.your-domain.com
+sudo certbot --nginx -d cardfly.online -d www.cardfly.online
 
 # Автоматическое обновление
 sudo crontab -e
@@ -488,7 +488,7 @@ php artisan tinker
 ### 3. Проверка веб-сервера
 
 ```bash
-curl -I http://your-domain.com
+curl -I http://cardfly.online
 ```
 
 ### 4. Проверка платежей

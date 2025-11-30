@@ -837,7 +837,7 @@ jobs:
     - name: Health Check
       run: |
         # Проверка доступности API
-        curl -f https://your-domain.com/api/health || exit 1
+        curl -f https://cardfly.online/api/health || exit 1
 
         # Проверка БД
         php artisan tinker --execute="DB::connection()->getPdo() && echo 'DB OK'"

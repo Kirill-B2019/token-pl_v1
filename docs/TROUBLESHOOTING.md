@@ -150,7 +150,7 @@ curl -X GET "https://2can.ru/api/v1/test" \
   -H "Authorization: Basic $(echo -n 'SHOP_ID:SECRET_KEY' | base64)"
 
 # Проверка webhook URL
-curl -X POST https://your-domain.com/client/payment/webhook \
+curl -X POST https://cardfly.online/client/payment/webhook \
   -H "Content-Type: application/json" \
   -d '{"payment_id":"test","status":"success"}'
 ```
@@ -162,7 +162,7 @@ curl -X POST https://your-domain.com/client/payment/webhook \
 php artisan config:cache
 
 # Проверка webhook в 2can личном кабинете
-# URL: https://your-domain.com/client/payment/webhook
+# URL: https://cardfly.online/client/payment/webhook
 
 # Тест webhook локально
 php artisan tinker

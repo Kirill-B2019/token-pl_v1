@@ -580,7 +580,7 @@ upstream laravel_backend {
 
 server {
     listen 80;
-    server_name your-domain.com;
+    server_name cardfly.online;
 
     location / {
         proxy_pass http://laravel_backend;

@@ -478,7 +478,7 @@ Log::error('Payment failed', [
 ```env
 APP_ENV=production
 APP_DEBUG=false
-APP_URL=https://your-domain.com
+APP_URL=https://cardfly.online
 
 DB_CONNECTION=mysql
 REDIS_HOST=127.0.0.1

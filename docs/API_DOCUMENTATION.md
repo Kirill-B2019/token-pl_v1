@@ -6,7 +6,7 @@
 
 ### Базовый URL
 ```
-https://your-domain.com/api/v1
+https://cardfly.online/api/v1
 ```
 
 ### Аутентификация
@@ -14,13 +14,13 @@ API использует Bearer токены для аутентификации
 
 ```bash
 # Получение токена
-curl -X POST https://your-domain.com/api/v1/login \
+curl -X POST https://cardfly.online/api/v1/login \
   -H "Content-Type: application/json" \
   -d '{"email":"user@example.com","password":"password"}'
 
 # Использование токена
 curl -H "Authorization: Bearer YOUR_TOKEN_HERE" \
-  https://your-domain.com/api/v1/user
+  https://cardfly.online/api/v1/user
 ```
 
 ### Формат ответа
@@ -527,7 +527,7 @@ class TokenPlatformAPI {
 }
 
 // Использование
-$api = new TokenPlatformAPI('https://your-domain.com', 'your_token');
+$api = new TokenPlatformAPI('https://cardfly.online', 'your_token');
 $user = $api->getUser();
 $payment = $api->createPayment(1000.00);
 ```
@@ -580,7 +580,7 @@ class TokenPlatformAPI {
 }
 
 // Использование
-const api = new TokenPlatformAPI('https://your-domain.com', 'your_token');
+const api = new TokenPlatformAPI('https://cardfly.online', 'your_token');
 const user = await api.getUser();
 const balances = await api.getBalances();
 const transactions = await api.getTransactions({ page: 1, per_page: 10 });
