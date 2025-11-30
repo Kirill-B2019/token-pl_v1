@@ -688,9 +688,3 @@ php artisan down --message="Technical maintenance in progress"
 php artisan up
 ```
 
-## Контакты поддержки
-
-- **Документация**: [docs.token-platform.local](https://docs.token-platform.local)
-- **GitHub Issues**: [Создать issue](https://github.com/your-org/token-platform/issues)
-- **Email**: support@token-platform.local
-- **Slack**: #support (для команды разработчиков)

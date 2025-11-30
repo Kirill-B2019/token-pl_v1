@@ -593,8 +593,3 @@ php artisan route:cache
 php artisan view:cache
 ```
 
-## Контакты поддержки
-
-- **Документация**: [docs.token-platform.local](https://docs.token-platform.local)
-- **Issues**: [GitHub Issues](https://github.com/your-org/token-platform/issues)
-- **Email**: support@token-platform.local

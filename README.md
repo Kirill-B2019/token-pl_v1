@@ -1,6 +1,6 @@
 # Токен Платформа
 
-[![Laravel](https://img.shields.io/badge/Laravel-11-red.svg)](https://laravel.com)
+[![Laravel](https://img.shields.io/badge/Laravel-12-red.svg)](https://laravel.com)
 [![PHP](https://img.shields.io/badge/PHP-8.2+-blue.svg)](https://php.net)
 [![Vue.js](https://img.shields.io/badge/Vue.js-3-green.svg)](https://vuejs.org)
 [![Bootstrap](https://img.shields.io/badge/Bootstrap-5-purple.svg)](https://getbootstrap.com)
@@ -31,7 +31,7 @@
 
 ## 🏗️ Архитектура
 
-### Backend (Laravel 11)
+### Backend (Laravel 12)
 ```
 app/
 ├── Http/Controllers/         # HTTP контроллеры

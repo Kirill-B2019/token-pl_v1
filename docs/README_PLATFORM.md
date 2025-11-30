@@ -65,8 +65,3 @@
 
 MIT License
 
-## Контакты
-
-- Email: support@token-platform.local
-- Документация: [Wiki](https://github.com/your-org/token-platform/wiki)
-- Issues: [GitHub Issues](https://github.com/your-org/token-platform/issues)

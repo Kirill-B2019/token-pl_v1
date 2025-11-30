@@ -606,8 +606,3 @@ const transactions = await api.getTransactions({ page: 1, per_page: 10 });
 API использует версионирование через URL:
 - `v1` - текущая версия (активна)
 
-## Поддержка
-
-- **Email**: api@token-platform.local
-- **Документация**: https://docs.token-platform.local/api
-- **Форум**: https://forum.token-platform.local
